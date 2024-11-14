@@ -22,9 +22,9 @@ jobs:
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         run: |
-          echo "$PRIVATE_KEY" > src/private_key.pem
-          python src/sign_scripts.py
-          rm src/private_key.pem
+          echo "$PRIVATE_KEY" > private_key.pem
+          python sign_scripts.py
+          rm private_key.pem
 
       - name: Commit Signatures
         run: |
