@@ -1,0 +1,35 @@
+name: Sign Scripts
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: pip install cryptography
+
+      - name: Sign Scripts
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          python sign_scripts.py
+          rm private_key.pem
+
+      - name: Commit Signatures
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add **/*.sig
+          git commit -m "Add signatures"
+          git push
